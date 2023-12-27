@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generate</title>
+
+</html>
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: black;
+    }
+
+    .con {
+        background-color: aqua;
+        border: 3px solid red;
+        padding: 20px;
+    }
+
+    .h {
+        font-size: x-large;
+        font-weight: bolder;
+        font-family: cursive;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    label {
+        font-size: x-large;
+        font-weight: bolder;
+        padding: 10px;
+    }
+
+    input {
+        font-size: x-large;
+        font-weight: bolder;
+        padding: 8px;
+        text-transform: capitalize;
+        border: 3px solid black;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        cursor: pointer;
+        font-size: x-large;
+        font-weight: bolder;
+        margin: 10px;
+        border: 3px solid black;
+    }
+
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button a {
+        color: white;
+        text-decoration: none;
+    }
+
+    button a:hover {
+        background-color: blue;
+    }
+
+    button:hover {
+        background-color: blue;
+    }
+
+    hr {
+        border: 3px solid red;
+    }
+
+    .thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        cursor: pointer;
+        padding: 10px;
+        border: 3px solid black;
+    }
+
+    .img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .imgs {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    p {
+        font-size: large;
+        font-weight: bolder;
+    }
+
+    .dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dot {
+        background-color: red;
+        width: 10px;
+        height: 10px;
+        border-radius: 50px;
+        margin: 0 5px;
+    }
+
+    @media screen and (max-width:1180px) {
+        .img {
+            flex-direction: column;
+        }
+    }
+
+    @media screen and (max-width:600px) {
+        .imgs {
+            flex-direction: column;
+        }
+
+        .img {
+            flex-direction: row;
+        }
+
+        .thumbnail {
+            padding: 0;
+        }
+    }
+
+    @media screen and (max-width:370px) {
+        input {
+            width: 200px;
+        }
+
+        form {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .thumbnail {
+            width: 120px;
+            height: 120px;
+        }
+
+        .con {
+            padding: 10px;
+        }
+    }
+</style>
+<title>Certificate Generator</title>
+</head>
+
+<body>
+    <div class="con">
+        <div class="h">Certificate Generator</div>
+        <hr>
+        <div class="dots">
+            <p>Select a background image:</p>
+            <div class="dot"></div>
+        </div>
+        <div class="imgs">
+            <div class="img">
+                <img class="thumbnail" src="1.jpg" onclick="selectBackground('1.jpg')">
+                <img class="thumbnail" src="2.jpg" onclick="selectBackground('2.jpg')">
+            </div>
+            <div class="img">
+                <img class="thumbnail" src="3.jpeg" onclick="selectBackground('3.jpeg')">
+                <img class="thumbnail" src="4.jpg" onclick="selectBackground('4.jpg')">
+            </div>
+            <div class="img">
+                <img class="thumbnail" src="5.jpg" onclick="selectBackground('5.jpg')">
+                <img class="thumbnail" src="6.jpg" onclick="selectBackground('6.jpg')">
+            </div>
+        </div>
+        <div class="imgs">
+            <div class="img">
+                <img class="thumbnail" src="7.png" onclick="selectBackground('7.png')">
+                <img class="thumbnail" src="8.png" onclick="selectBackground('8.png')">
+            </div>
+            <div class="img">
+                <img class="thumbnail" src="9.png" onclick="selectBackground('9.png')">
+                <img class="thumbnail" src="10.jpg" onclick="selectBackground('10.jpg')">
+            </div>
+        </div>
+        <form action="/generateCertificate" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="selectedBackground" name="selectedBackground" value="" required>
+            <div class="dots">
+                <label for="recipientName">Recipient Name:</label>
+                <div class="dot"></div>
+            </div>
+            <input type="text" id="recipientName" name="recipientName" placeholder="Enter Your Name" required>
+            <div class="dots">
+                <label for="courseName">Course Name:</label>
+                <div class="dot"></div>
+            </div>
+            <input type="text" id="courseName" name="courseName" placeholder="Enter Your Course" required>
+            <div class="dots">
+                <label for="issueDate">Issue Date:</label>
+                <div class="dot"></div>
+            </div>
+            <input type="date" id="issueDate" name="issueDate" required>
+
+            <label for="image">Logo :</label>
+            <input type="file" id="image" name="image" accept=".jpg, png, jpeg">
+            <div class="dots">
+                <div class="dot"></div>
+                <p>This Field Are Mandotory</p>
+            </div>
+            <div class="button">
+                <button type="submit" value="Generate Certificate">Submit</button>
+                <button><a href="">Reset</a></button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function selectBackground(imagePath) {
+            document.getElementById('selectedBackground').value = imagePath;
+
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumbnail => {
+                thumbnail.style.border = 'none';
+            });
+            event.target.style.border = '2px solid blue';
+        }
+    </script>
+</body>
+
+</html>

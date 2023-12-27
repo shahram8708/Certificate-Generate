@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
-
+let multer = require("multer")
+let upload = multer({dest : "uploads/"})
 const app = express();
 const port = 3000;
 
@@ -13,20 +14,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.post('/generateCertificate', (req, res) => {
-    let { recipientName, courseName, issueDate, image, images } = req.body;
-
-    // Convert text to uppercase
+app.post('/generateCertificate', upload.any(),(req, res,next) => {
+    let { recipientName, courseName, issueDate } = req.body;
+    
     recipientName = recipientName.toUpperCase();
     courseName = courseName.toUpperCase();
     issueDate = issueDate.toUpperCase();
-
+    console.log(req.files.image);
+    
+    const backgroundImagePath = path.join(__dirname, 'public', req.body.selectedBackground);
     const doc = new PDFDocument();
     const filePath = path.join(__dirname, 'certificates', 'certificate.pdf');
     const writeStream = fs.createWriteStream(filePath);
 
-    const backgroundImagePath = path.join(__dirname, 'background.jpg');
-    const fontPath = path.join(__dirname, 'GreatVibes-Regular.ttf');
+
+    const imageBuffer = fs.readFileSync(req.files[0].path);
 
     doc.image(backgroundImagePath, 0, 200, { width: 620, height: 400 })
         .fontSize(50)
@@ -56,11 +58,7 @@ app.post('/generateCertificate', (req, res) => {
         .fontSize(25)
         .text(`On This Date, ${issueDate}`, { align: 'center', margin: [0, 20] })
         .moveDown()
-        .image(image, 115, 310, { width: 40, height: 40, align: "center" })
-        .moveDown()
-        .image(images, 80, 480, { width: 50, height: 50, align: "center" })
-        .fontSize(20)
-        .text("Signature", 60, 550);
+        .image(imageBuffer, 90, 500, { width: 40, height: 40, align: 'center' })
 
     doc.end();
 
@@ -70,6 +68,7 @@ app.post('/generateCertificate', (req, res) => {
     });
 
     doc.pipe(writeStream);
+
 });
 
 app.listen(port, () => {
